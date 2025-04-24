@@ -41,7 +41,7 @@ compose.desktop {
         nativeDistributions {
             targetFormats(TargetFormat.Dmg, TargetFormat.Msi, TargetFormat.Deb)
             packageName = "shaker"
-            packageVersion = "1.0.0"
+            packageVersion = System.getenv("VERSION") ?: "1.0.0"
         }
     }
 }

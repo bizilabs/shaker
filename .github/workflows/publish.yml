@@ -1,41 +1,19 @@
-name: Publish
+name: Publish on Tag
 
 on:
   push:
-    branches:
-      - main
+    tags:
+      - '*'
 
 concurrency:
   group: ${{ github.workflow }} - ${{ github.ref }}
   cancel-in-progress: true
 
 jobs:
-  linting:
-    runs-on: ubuntu-latest
-    steps:
-      - name: Checkout project sources
-        uses: actions/checkout@v4
-
-      - name: Set up JDK 21
-        uses: actions/setup-java@v3
-        with:
-          distribution: 'temurin'
-          java-version: '21'
-          cache: 'gradle'
-
-      - name: Setup Gradle
-        uses: gradle/actions/setup-gradle@v4
-        with:
-          cache-read-only: false
-
-      - name: Run lint checks with Gradle Wrapper
-        run: ./gradlew ktlintCheck
-
-  build-and-publish:
-    needs: linting
+  build:
     strategy:
       matrix:
-        os: [ ubuntu-latest, macos-latest, windows-latest ]
+        os: [ubuntu-latest, macos-latest, windows-latest]
     runs-on: ${{ matrix.os }}
     steps:
       - name: Checkout project sources
@@ -54,11 +32,47 @@ jobs:
           cache-read-only: false
 
       - name: Build and package distribution
-        run: ./gradlew packageDistributionForCurrentOS
+        run: ./gradlew packageDistributionForCurrentOS -Pversion=${{ github.ref_name }}
+        env:
+          VERSION: ${{ github.ref_name }}
 
       - name: Upload build artifact
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v3
         with:
-          name: shake-${{ github.sha }}-${{ matrix.os }}
-          path: |
-            build/compose/binaries/*
+          name: shaker-${{ github.ref_name }}-${{ matrix.os }}
+          path: build/compose/binaries/${{ matrix.os }}/*
+
+  publish:
+    needs: build
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout project sources
+        uses: actions/checkout@v4
+
+      - name: Download Linux artifact
+        uses: actions/download-artifact@v3
+        with:
+          name: shaker-${{ github.ref_name }}-ubuntu-latest
+
+      - name: Download macOS artifact
+        uses: actions/download-artifact@v3
+        with:
+          name: shaker-${{ github.ref_name }}-macos-latest
+
+      - name: Download Windows artifact
+        uses: actions/download-artifact@v3
+        with:
+          name: shaker-${{ github.ref_name }}-windows-latest
+
+      - name: Publish artifacts to GitHub Releases
+        uses: ncipollo/release-action@v1
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+          artifacts: |
+            build/compose/binaries/ubuntu-latest/*.deb
+            build/compose/binaries/macos-latest/*.dmg
+            build/compose/binaries/windows-latest/*.msi
+          tag: ${{ github.ref_name }}
+          release_name: Release ${{ github.ref_name }}
+          body: |
+            This release includes builds for Linux (.deb), macOS (.dmg), and Windows (.msi).
