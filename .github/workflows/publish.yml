@@ -37,7 +37,7 @@ jobs:
           VERSION: ${{ github.ref_name }}
 
       - name: Upload build artifact
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
           name: shaker-${{ github.ref_name }}-${{ matrix.os }}
           path: build/compose/binaries/${{ matrix.os }}/*
@@ -50,17 +50,17 @@ jobs:
         uses: actions/checkout@v4
 
       - name: Download Linux artifact
-        uses: actions/download-artifact@v3
+        uses: actions/download-artifact@v4
         with:
           name: shaker-${{ github.ref_name }}-ubuntu-latest
 
       - name: Download macOS artifact
-        uses: actions/download-artifact@v3
+        uses: actions/download-artifact@v4
         with:
           name: shaker-${{ github.ref_name }}-macos-latest
 
       - name: Download Windows artifact
-        uses: actions/download-artifact@v3
+        uses: actions/download-artifact@v4
         with:
           name: shaker-${{ github.ref_name }}-windows-latest
 
