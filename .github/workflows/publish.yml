@@ -36,11 +36,23 @@ jobs:
         env:
           VERSION: ${{ github.ref_name }}
 
-      - name: Upload build artifact
+      - name: Upload MacOS
         uses: actions/upload-artifact@v4
         with:
           name: shaker-${{ github.ref_name }}-${{ matrix.os }}
-          path: build/compose/binaries/${{ matrix.os }}/*
+          path: build/compose/binaries/dmg/*.dmg
+
+      - name: Upload Linux
+        uses: actions/upload-artifact@v4
+        with:
+          name: shaker-${{ github.ref_name }}-${{ matrix.os }}
+          path: build/compose/binaries/deb/*.deb
+
+      - name: Upload Windows
+        uses: actions/upload-artifact@v4
+        with:
+          name: shaker-${{ github.ref_name }}-${{ matrix.os }}
+          path: build/compose/binaries/msi/*.exe
 
   publish:
     needs: build
@@ -71,8 +83,8 @@ jobs:
           artifacts: |
             build/compose/binaries/ubuntu-latest/*.deb
             build/compose/binaries/macos-latest/*.dmg
-            build/compose/binaries/windows-latest/*.msi
+            build/compose/binaries/windows-latest/*.exe
           tag: ${{ github.ref_name }}
           release_name: Release ${{ github.ref_name }}
           body: |
-            This release includes builds for Linux (.deb), macOS (.dmg), and Windows (.msi).
+            This release includes builds for Linux (.deb), macOS (.dmg), and Windows (.exe).
