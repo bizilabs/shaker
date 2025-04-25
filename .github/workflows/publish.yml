@@ -89,14 +89,14 @@ jobs:
           PREVIOUS_TAG=$(git describe --tags --abbrev=0 HEAD^ 2>/dev/null || echo "")
           if [ -z "$PREVIOUS_TAG" ]; then
             # If no previous tag exists, include all commits in the repository
-            COMMITS=$(git log --oneline)
+            COMMITS=$(git log --oneline | sed ':a;N;$!ba;s/\n/\\n/g')
           else
             # Generate updates between the previous tag and the current HEAD
-            COMMITS=$(git log $PREVIOUS_TAG..HEAD --oneline)
+            COMMITS=$(git log $PREVIOUS_TAG..HEAD --oneline | sed ':a;N;$!ba;s/\n/\\n/g')
           fi
           
           # Save the release notes
-          echo -e "release_body=This release includes builds for MacOS (.dmg), Linux (.deb), and Windows (.exe).\n\nUpdates:\n$COMMITS" >> $GITHUB_ENV
+          echo "release_body=This release includes builds for MacOS (.dmg), Linux (.deb), and Windows (.exe).\n\nUpdates:\n$COMMITS" >> $GITHUB_ENV
 
       - name: Publish artifacts to GitHub Releases
         uses: ncipollo/release-action@v1
