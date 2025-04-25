@@ -85,12 +85,18 @@ jobs:
       - name: Generate Release Notes
         id: release_notes
         run: |
-          # Get the previous release tag
-          PREVIOUS_TAG=$(git describe --tags --abbrev=0 HEAD^)
-          # Generate the list of commits between the previous and current tags
-          COMMITS=$(git log $PREVIOUS_TAG..HEAD --oneline)
+          # Attempt to get the previous tag, default to empty if none exists
+          PREVIOUS_TAG=$(git describe --tags --abbrev=0 HEAD^ 2>/dev/null || echo "")
+          if [ -z "$PREVIOUS_TAG" ]; then
+            # If no previous tag exists, include all commits in the repository
+            COMMITS=$(git log --oneline)
+          else
+            # Generate updates between the previous tag and the current HEAD
+            COMMITS=$(git log $PREVIOUS_TAG..HEAD --oneline)
+          fi
+          
           # Save the release notes
-          echo "release_body=This release includes builds for MacOS (.dmg), Linux (.deb) and Windows (.exe).\n\nCommits:\n$COMMITS" >> $GITHUB_ENV
+          echo -e "release_body=This release includes builds for MacOS (.dmg), Linux (.deb), and Windows (.exe).\n\nUpdates:\n$COMMITS" >> $GITHUB_ENV
 
       - name: Publish artifacts to GitHub Releases
         uses: ncipollo/release-action@v1
