@@ -37,7 +37,7 @@ jobs:
           VERSION: ${{ github.ref_name }}
 
       - name: Upload Platform-Specific Artifact
-        if: ${{ matrix.os == 'macos-latest' || matrix.os == 'ubuntu-latest' || matrix.os == 'windows-latest' }}
+        shell: bash
         run: |
           if [[ "${{ matrix.os }}" == "macos-latest" ]]; then
             echo "artifact_path=build/compose/binaries/main/dmg/*.dmg" >> $GITHUB_ENV
