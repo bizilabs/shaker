@@ -48,6 +48,8 @@ jobs:
   publish:
     needs: build
     runs-on: ubuntu-latest
+    permissions:
+      contents: write
     steps:
       - name: Checkout project sources
         uses: actions/checkout@v4
@@ -76,6 +78,5 @@ jobs:
             build/compose/binaries/macos-latest/*.dmg
             build/compose/binaries/windows-latest/*.exe
           tag: ${{ github.ref_name }}
-          release_name: Release ${{ github.ref_name }}
           body: |
             This release includes builds for Linux (.deb), macOS (.dmg), and Windows (.exe).
