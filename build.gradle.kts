@@ -39,7 +39,7 @@ compose.desktop {
         mainClass = "dev.mambo.play.shaker.MainKt"
 
         nativeDistributions {
-            targetFormats(TargetFormat.Dmg, TargetFormat.Msi, TargetFormat.Deb)
+            targetFormats(TargetFormat.Dmg, TargetFormat.Exe, TargetFormat.Deb)
             packageName = "shaker"
             packageVersion = System.getenv("VERSION") ?: "1.0.0"
         }

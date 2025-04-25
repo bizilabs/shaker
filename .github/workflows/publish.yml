@@ -44,7 +44,7 @@ jobs:
           elif [[ "${{ matrix.os }}" == "ubuntu-latest" ]]; then
             echo "artifact_path=build/compose/binaries/main/deb/*.deb" >> $GITHUB_ENV
           elif [[ "${{ matrix.os }}" == "windows-latest" ]]; then
-            echo "artifact_path=build/compose/binaries/main/msi/*.msi" >> $GITHUB_ENV
+            echo "artifact_path=build/compose/binaries/main/exe/*.exe" >> $GITHUB_ENV
           fi
 
       - name: Upload Artifact
@@ -87,7 +87,7 @@ jobs:
           artifacts: |
             linux_artifacts/*.deb, 
             macos_artifacts/*.dmg, 
-            windows_artifacts/*.msi
+            windows_artifacts/*.exe
           tag: ${{ github.ref_name }}
           body: |
             This release includes builds for Linux (.deb), macOS (.dmg), and Windows (.exe).
