@@ -36,23 +36,14 @@ jobs:
         env:
           VERSION: ${{ github.ref_name }}
 
-      - name: Upload MacOS
+      - name: Upload Artifacts
         uses: actions/upload-artifact@v4
         with:
           name: shaker-${{ github.ref_name }}-${{ matrix.os }}
-          path: build/compose/binaries/dmg/*.dmg
-
-      - name: Upload Linux
-        uses: actions/upload-artifact@v4
-        with:
-          name: shaker-${{ github.ref_name }}-${{ matrix.os }}
-          path: build/compose/binaries/deb/*.deb
-
-      - name: Upload Windows
-        uses: actions/upload-artifact@v4
-        with:
-          name: shaker-${{ github.ref_name }}-${{ matrix.os }}
-          path: build/compose/binaries/msi/*.exe
+          path: |
+            ${{ matrix.os == 'macos-latest' && 'build/compose/binaries/main/dmg/*.dmg' }}
+            ${{ matrix.os == 'ubuntu-latest' && 'build/compose/binaries/main/deb/*.deb' }}
+            ${{ matrix.os == 'windows-latest' && 'build/compose/binaries/main/msi/*.exe' }}
 
   publish:
     needs: build
