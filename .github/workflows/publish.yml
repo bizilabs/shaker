@@ -36,14 +36,22 @@ jobs:
         env:
           VERSION: ${{ github.ref_name }}
 
-      - name: Upload Artifacts
+      - name: Upload Platform-Specific Artifact
+        if: ${{ matrix.os == 'macos-latest' || matrix.os == 'ubuntu-latest' || matrix.os == 'windows-latest' }}
+        run: |
+          if [[ "${{ matrix.os }}" == "macos-latest" ]]; then
+            echo "artifact_path=build/compose/binaries/main/dmg/*.dmg" >> $GITHUB_ENV
+          elif [[ "${{ matrix.os }}" == "ubuntu-latest" ]]; then
+            echo "artifact_path=build/compose/binaries/main/deb/*.deb" >> $GITHUB_ENV
+          elif [[ "${{ matrix.os }}" == "windows-latest" ]]; then
+            echo "artifact_path=build/compose/binaries/main/msi/*.exe" >> $GITHUB_ENV
+          fi
+
+      - name: Upload Artifact
         uses: actions/upload-artifact@v4
         with:
           name: shaker-${{ github.ref_name }}-${{ matrix.os }}
-          path: |
-            ${{ matrix.os == 'macos-latest' && 'build/compose/binaries/main/dmg/*.dmg' }}
-            ${{ matrix.os == 'ubuntu-latest' && 'build/compose/binaries/main/deb/*.deb' }}
-            ${{ matrix.os == 'windows-latest' && 'build/compose/binaries/main/msi/*.msi' }}
+          path: ${{ env.artifact_path }}
 
   publish:
     needs: build
@@ -58,22 +66,29 @@ jobs:
         uses: actions/download-artifact@v4
         with:
           name: shaker-${{ github.ref_name }}-ubuntu-latest
+          path: linux_artifacts
 
       - name: Download macOS artifact
         uses: actions/download-artifact@v4
         with:
           name: shaker-${{ github.ref_name }}-macos-latest
+          path: macos_artifacts
 
       - name: Download Windows artifact
         uses: actions/download-artifact@v4
         with:
           name: shaker-${{ github.ref_name }}-windows-latest
+          path: windows_artifacts
 
       - name: Publish artifacts to GitHub Releases
         uses: ncipollo/release-action@v1
         with:
           token: ${{ secrets.ACCESS_TOKEN }}
-          artifacts: "build/compose/binaries/macos-latest/*.dmg, build/compose/binaries/ubuntu-latest/*.deb, build/compose/binaries/windows-latest/*.exe"
+          artifacts: |
+            linux_artifacts/*.deb, 
+            macos_artifacts/*.dmg, 
+            windows_artifacts/*.exe
           tag: ${{ github.ref_name }}
           body: |
             This release includes builds for Linux (.deb), macOS (.dmg), and Windows (.exe).
+ 
