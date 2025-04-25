@@ -5,6 +5,6 @@ import cafe.adriel.voyager.navigator.Navigator
 import dev.mambo.play.shaker.screen.MainScreen
 
 @Composable
-fun MainNavigation(close: () -> Unit) {
-    Navigator(MainScreen(close = close))
+fun MainNavigation(close: () -> Unit, hide: () -> Unit) {
+    Navigator(MainScreen(close = close, hide = hide))
 }

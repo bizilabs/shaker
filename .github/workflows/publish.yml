@@ -80,6 +80,16 @@ jobs:
           name: shaker-${{ github.ref_name }}-windows-latest
           path: windows_artifacts
 
+      - name: Generate Release Notes
+        id: release_notes
+        run: |
+          # Get the previous release tag
+          PREVIOUS_TAG=$(git describe --tags --abbrev=0 HEAD^)
+          # Generate the list of commits between the previous and current tags
+          COMMITS=$(git log $PREVIOUS_TAG..HEAD --oneline)
+          # Save the release notes
+          echo "release_body=This release includes builds for MacOS (.dmg), Linux (.deb) and Windows (.exe).\n\nCommits:\n$COMMITS" >> $GITHUB_ENV
+
       - name: Publish artifacts to GitHub Releases
         uses: ncipollo/release-action@v1
         with:
@@ -89,6 +99,4 @@ jobs:
             macos_artifacts/*.dmg, 
             windows_artifacts/*.exe
           tag: ${{ github.ref_name }}
-          body: |
-            This release includes builds for Linux (.deb), macOS (.dmg), and Windows (.exe).
- 
+          body: ${{ env.release_body }}

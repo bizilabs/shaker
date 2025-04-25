@@ -10,6 +10,7 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Close
+import androidx.compose.material.icons.filled.Minimize
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Card
@@ -35,6 +36,7 @@ import io.github.alexzhirkevich.compottie.rememberLottieComposition
 
 class MainScreen(
     val close: () -> Unit,
+    val hide: () -> Unit,
 ) : Screen {
     @Composable
     override fun Content() {
@@ -44,6 +46,7 @@ class MainScreen(
             state = state,
             onAction = screenModel::onAction,
             closeApplication = close,
+            hideApplication = hide,
         )
     }
 }
@@ -55,6 +58,7 @@ fun MainScreenContent(
     state: MainScreenState,
     onAction: (MainScreenAction) -> Unit,
     closeApplication: () -> Unit,
+    hideApplication: () -> Unit
 ) {
     val animFromUrl by rememberLottieComposition {
         LottieCompositionSpec.Url("https://lottie.host/eee894d5-34a7-411e-9575-10d0b1bbdc95/C4BlHWYTPq.lottie")
@@ -66,9 +70,14 @@ fun MainScreenContent(
                 title = {},
                 navigationIcon = {
                     IconButton(onClick = closeApplication) {
-                        Icon(Icons.Filled.Close, "Back")
+                        Icon(Icons.Filled.Close, "close")
                     }
                 },
+                actions = {
+                    IconButton(onClick = hideApplication) {
+                        Icon(Icons.Filled.Minimize, "minimise")
+                    }
+                }
             )
         },
     ) { innerPadding ->

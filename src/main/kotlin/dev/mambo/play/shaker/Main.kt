@@ -17,13 +17,13 @@ import dev.mambo.play.shaker.theme.provideShakerColorScheme
 
 @Composable
 @Preview
-fun App(close: () -> Unit) {
+fun App(close: () -> Unit, hide: () -> Unit) {
     CompositionLocalProvider(provideShakerColorScheme(isSystemInDarkTheme())) {
         MaterialTheme(
             colorScheme = getColorScheme(),
             shapes = getShape(),
         ) {
-            MainNavigation(close = close)
+            MainNavigation(close = close, hide = hide)
         }
     }
 }
@@ -43,6 +43,9 @@ fun main() =
             onCloseRequest = ::exitApplication,
             decoration = WindowDecoration.Undecorated(),
         ) {
-            App(close = ::exitApplication)
+            App(
+                close = ::exitApplication,
+                hide = { window.isVisible = false },
+            )
         }
     }
