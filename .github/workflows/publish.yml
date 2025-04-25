@@ -1,4 +1,4 @@
-name: Publish on Tag
+name: Publishing
 
 on:
   push:
@@ -43,7 +43,7 @@ jobs:
           path: |
             ${{ matrix.os == 'macos-latest' && 'build/compose/binaries/main/dmg/*.dmg' }}
             ${{ matrix.os == 'ubuntu-latest' && 'build/compose/binaries/main/deb/*.deb' }}
-            ${{ matrix.os == 'windows-latest' && 'build/compose/binaries/main/msi/*.exe' }}
+            ${{ matrix.os == 'windows-latest' && 'build/compose/binaries/main/msi/*.msi' }}
 
   publish:
     needs: build
@@ -70,7 +70,7 @@ jobs:
       - name: Publish artifacts to GitHub Releases
         uses: ncipollo/release-action@v1
         with:
-          token: ${{ secrets.GITHUB_TOKEN }}
+          token: ${{ secrets.ACCESS_TOKEN }}
           artifacts: |
             build/compose/binaries/ubuntu-latest/*.deb
             build/compose/binaries/macos-latest/*.dmg
