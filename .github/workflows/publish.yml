@@ -73,10 +73,7 @@ jobs:
         uses: ncipollo/release-action@v1
         with:
           token: ${{ secrets.ACCESS_TOKEN }}
-          artifacts: |
-            build/compose/binaries/ubuntu-latest/*.deb
-            build/compose/binaries/macos-latest/*.dmg
-            build/compose/binaries/windows-latest/*.exe
+          artifacts: "build/compose/binaries/macos-latest/*.dmg, build/compose/binaries/ubuntu-latest/*.deb, build/compose/binaries/windows-latest/*.exe"
           tag: ${{ github.ref_name }}
           body: |
             This release includes builds for Linux (.deb), macOS (.dmg), and Windows (.exe).
