@@ -32,7 +32,7 @@ jobs:
           cache-read-only: false
 
       - name: Build and package distribution
-        run: ./gradlew packageDistributionForCurrentOS -Pversion=${{ github.ref_name }}
+        run: ./gradlew packageDistributionForCurrentOS
         env:
           VERSION: ${{ github.ref_name }}
 
