@@ -87,7 +87,7 @@ jobs:
           artifacts: |
             linux_artifacts/*.deb, 
             macos_artifacts/*.dmg, 
-            windows_artifacts/*.exe
+            windows_artifacts/*.msi
           tag: ${{ github.ref_name }}
           body: |
             This release includes builds for Linux (.deb), macOS (.dmg), and Windows (.exe).
