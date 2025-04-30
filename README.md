@@ -3,8 +3,10 @@
 <strong>A desktop application to move your mouse cursor</strong>
 </p>
 
-<p align="center">
+<div align="center"> 
+
 ![stars](https://img.shields.io:/github/stars/bizilabs/shaker?style=for-the-badge) ![release](https://img.shields.io:/github/v/release/bizilabs/shaker?style=for-the-badge) ![checks](https://img.shields.io/github/check-runs/bizilabs/shaker/main?style=for-the-badge)
-</p>
+
+</div>
 
 <br>
