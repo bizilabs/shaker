@@ -1,4 +1,4 @@
-package dev.mambo.play.shaker.theme
+package org.bizilabs.apps.shaker.theme
 
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Shapes

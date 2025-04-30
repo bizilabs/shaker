@@ -1,15 +1,14 @@
-package dev.mambo.play.shaker.screen
+package org.bizilabs.apps.shaker.screen
 
 import cafe.adriel.voyager.core.model.StateScreenModel
 import cafe.adriel.voyager.core.model.screenModelScope
-import dev.mambo.play.shaker.utils.MouseCommand
-import dev.mambo.play.shaker.utils.MouseCommandExecutor
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
+import org.bizilabs.apps.shaker.utils.MouseCommand
+import org.bizilabs.apps.shaker.utils.MouseCommandExecutor
 import kotlin.random.Random
-import kotlin.random.nextInt
 
 sealed interface MainScreenAction {
     object ToggleActive : MainScreenAction
@@ -17,11 +16,14 @@ sealed interface MainScreenAction {
     object IncreaseDelay : MainScreenAction
 
     object DecreaseDelay : MainScreenAction
+
+    data class UpdateOffset(val offset: Int) : MainScreenAction
 }
 
 data class MainScreenState(
     val active: Boolean = false,
     val delay: Long = 500,
+    val offset: Int = 0,
 )
 
 class MainScreenModel(
@@ -32,7 +34,12 @@ class MainScreenModel(
             is MainScreenAction.ToggleActive -> toggleActive()
             MainScreenAction.DecreaseDelay -> updateDelay(shouldDecreaseDelay = true)
             MainScreenAction.IncreaseDelay -> updateDelay(shouldDecreaseDelay = false)
+            is MainScreenAction.UpdateOffset -> updateOffset(action.offset)
         }
+    }
+
+    private fun updateOffset(offset: Int) {
+        mutableState.update { it.copy(offset = offset) }
     }
 
     private fun updateDelay(shouldDecreaseDelay: Boolean) {

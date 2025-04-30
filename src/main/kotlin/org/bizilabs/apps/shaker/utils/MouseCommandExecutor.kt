@@ -1,4 +1,4 @@
-package dev.mambo.play.shaker.utils
+package org.bizilabs.apps.shaker.utils
 
 import java.awt.MouseInfo
 import java.awt.Robot

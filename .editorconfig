@@ -2,3 +2,6 @@ root = true
 
 [*]
 ktlint_function_naming_ignore_when_annotated_with = Composable
+
+[/generated/]
+ktlint_disabled_rules = true

@@ -1,10 +1,13 @@
-package dev.mambo.play.shaker
+package org.bizilabs.apps.shaker
 
 import androidx.compose.runtime.Composable
 import cafe.adriel.voyager.navigator.Navigator
-import dev.mambo.play.shaker.screen.MainScreen
+import org.bizilabs.apps.shaker.screen.MainScreen
 
 @Composable
-fun MainNavigation(close: () -> Unit, hide: () -> Unit) {
+fun MainNavigation(
+    close: () -> Unit,
+    hide: () -> Unit,
+) {
     Navigator(MainScreen(close = close, hide = hide))
 }
