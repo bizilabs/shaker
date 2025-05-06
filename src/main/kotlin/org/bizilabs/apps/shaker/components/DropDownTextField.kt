@@ -1,7 +1,5 @@
 package org.bizilabs.apps.shaker.components
 
-import androidx.compose.foundation.layout.ColumnScope
-import androidx.compose.foundation.text.input.TextFieldLineLimits
 import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.ExposedDropdownMenuBox
@@ -23,7 +21,7 @@ fun <T> DropDownTextField(
     modifier: Modifier = Modifier,
     label: String = "Select",
     onValueChange: (T) -> Unit = {},
-    content: @Composable (T) -> Unit
+    content: @Composable (T) -> Unit,
 ) {
     var expanded by remember { mutableStateOf(false) }
 

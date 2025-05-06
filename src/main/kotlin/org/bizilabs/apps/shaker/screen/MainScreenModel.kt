@@ -16,12 +16,13 @@ sealed interface MainScreenAction {
     data class UpdateOffset(val offset: Int) : MainScreenAction
 
     data class UpdateCount(val count: String) : MainScreenAction
+
     data class UpdateOption(val option: DelayOption) : MainScreenAction
 }
 
 enum class DelayOption {
     Second,
-    Minute
+    Minute,
 }
 
 data class MainScreenState(
@@ -32,10 +33,11 @@ data class MainScreenState(
     val options: List<DelayOption> = DelayOption.entries,
 ) {
     val delay: Long
-        get() = when (option) {
-            DelayOption.Second -> secondsToMillis(count.toLongOrNull() ?: 30L)
-            DelayOption.Minute -> minutesToMillis(count.toLongOrNull() ?: 3)
-        }
+        get() =
+            when (option) {
+                DelayOption.Second -> secondsToMillis(count.toLongOrNull() ?: 30L)
+                DelayOption.Minute -> minutesToMillis(count.toLongOrNull() ?: 3)
+            }
 }
 
 class MainScreenModel(
@@ -89,6 +91,6 @@ private fun secondsToMillis(seconds: Long): Long {
     return seconds * 1000
 }
 
-fun minutesToMillis(minutes: Long): Long {
+private fun minutesToMillis(minutes: Long): Long {
     return minutes * 60 * 1000
 }

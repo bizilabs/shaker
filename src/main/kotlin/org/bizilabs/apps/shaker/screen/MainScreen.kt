@@ -9,7 +9,6 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Close
@@ -42,7 +41,6 @@ import cafe.adriel.voyager.core.screen.Screen
 import io.github.alexzhirkevich.compottie.LottieCompositionSpec
 import io.github.alexzhirkevich.compottie.Url
 import io.github.alexzhirkevich.compottie.rememberLottieComposition
-import org.bizilabs.apps.shaker.components.DropDownTextField
 import org.bizilabs.apps.shaker.theme.ShakerTheme
 
 class MainScreen(
@@ -143,22 +141,24 @@ fun MainScreenContent(
                         },
                         label = {
                             Text(
-                                text = when (state.option) {
-                                    DelayOption.Second -> "Second/s"
-                                    DelayOption.Minute -> "Minute/s"
-                                }
+                                text =
+                                    when (state.option) {
+                                        DelayOption.Second -> "Second/s"
+                                        DelayOption.Minute -> "Minute/s"
+                                    },
                             )
                         },
                         trailingIcon = {
                             Card(
                                 enabled = state.active.not(),
                                 onClick = {
-                                    val option = when (state.option) {
-                                        DelayOption.Second -> DelayOption.Minute
-                                        else -> DelayOption.Second
-                                    }
+                                    val option =
+                                        when (state.option) {
+                                            DelayOption.Second -> DelayOption.Minute
+                                            else -> DelayOption.Second
+                                        }
                                     onAction(MainScreenAction.UpdateOption(option))
-                                }
+                                },
                             ) {
                                 Row(
                                     modifier = Modifier.padding(8.dp),
@@ -166,15 +166,16 @@ fun MainScreenContent(
                                     horizontalArrangement = Arrangement.spacedBy(8.dp),
                                 ) {
                                     Text(
-                                        text = when (state.option) {
-                                            DelayOption.Second -> "Sec"
-                                            DelayOption.Minute -> "Min"
-                                        }
+                                        text =
+                                            when (state.option) {
+                                                DelayOption.Second -> "Sec"
+                                                DelayOption.Minute -> "Min"
+                                            },
                                     )
                                     Icon(imageVector = Icons.Filled.KeyboardArrowDown, contentDescription = "Min")
                                 }
                             }
-                        }
+                        },
                     )
                 }
             }
