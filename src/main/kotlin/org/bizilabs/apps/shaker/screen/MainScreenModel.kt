@@ -13,18 +13,30 @@ import kotlin.random.Random
 sealed interface MainScreenAction {
     object ToggleActive : MainScreenAction
 
-    object IncreaseDelay : MainScreenAction
-
-    object DecreaseDelay : MainScreenAction
-
     data class UpdateOffset(val offset: Int) : MainScreenAction
+
+    data class UpdateCount(val count: String) : MainScreenAction
+    data class UpdateOption(val option: DelayOption) : MainScreenAction
+}
+
+enum class DelayOption {
+    Second,
+    Minute
 }
 
 data class MainScreenState(
     val active: Boolean = false,
-    val delay: Long = 500,
     val offset: Int = 0,
-)
+    val count: String = "",
+    val option: DelayOption = DelayOption.Second,
+    val options: List<DelayOption> = DelayOption.entries,
+) {
+    val delay: Long
+        get() = when (option) {
+            DelayOption.Second -> secondsToMillis(count.toLongOrNull() ?: 30L)
+            DelayOption.Minute -> minutesToMillis(count.toLongOrNull() ?: 3)
+        }
+}
 
 class MainScreenModel(
     private val executor: MouseCommandExecutor = MouseCommandExecutor(),
@@ -32,21 +44,22 @@ class MainScreenModel(
     fun onAction(action: MainScreenAction) {
         when (action) {
             is MainScreenAction.ToggleActive -> toggleActive()
-            MainScreenAction.DecreaseDelay -> updateDelay(shouldDecreaseDelay = true)
-            MainScreenAction.IncreaseDelay -> updateDelay(shouldDecreaseDelay = false)
             is MainScreenAction.UpdateOffset -> updateOffset(action.offset)
+            is MainScreenAction.UpdateCount -> updateCount(count = action.count)
+            is MainScreenAction.UpdateOption -> updateOption(option = action.option)
         }
+    }
+
+    private fun updateCount(count: String) {
+        mutableState.update { it.copy(count = count) }
+    }
+
+    private fun updateOption(option: DelayOption) {
+        mutableState.update { it.copy(option = option) }
     }
 
     private fun updateOffset(offset: Int) {
         mutableState.update { it.copy(offset = offset) }
-    }
-
-    private fun updateDelay(shouldDecreaseDelay: Boolean) {
-        when (shouldDecreaseDelay) {
-            true -> mutableState.update { it.copy(delay = it.delay - 500) }
-            false -> mutableState.update { it.copy(delay = it.delay + 500) }
-        }
     }
 
     private fun toggleActive() {
@@ -70,4 +83,12 @@ class MainScreenModel(
                 startMovingMouseWork()
             }
     }
+}
+
+private fun secondsToMillis(seconds: Long): Long {
+    return seconds * 1000
+}
+
+fun minutesToMillis(minutes: Long): Long {
+    return minutes * 60 * 1000
 }

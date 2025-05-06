@@ -7,10 +7,13 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Close
+import androidx.compose.material.icons.filled.KeyboardArrowDown
 import androidx.compose.material.icons.filled.Minimize
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
@@ -22,6 +25,7 @@ import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
+import androidx.compose.material3.TextField
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
@@ -38,6 +42,7 @@ import cafe.adriel.voyager.core.screen.Screen
 import io.github.alexzhirkevich.compottie.LottieCompositionSpec
 import io.github.alexzhirkevich.compottie.Url
 import io.github.alexzhirkevich.compottie.rememberLottieComposition
+import org.bizilabs.apps.shaker.components.DropDownTextField
 import org.bizilabs.apps.shaker.theme.ShakerTheme
 
 class MainScreen(
@@ -123,44 +128,54 @@ fun MainScreenContent(
                         Text(text = "", modifier = Modifier.align(Alignment.Center))
                     }
                 }
+
                 Row(
-                    modifier = Modifier.fillMaxWidth(),
+                    modifier = Modifier.fillMaxWidth().padding(horizontal = 16.dp),
                     verticalAlignment = Alignment.CenterVertically,
+                    horizontalArrangement = Arrangement.spacedBy(16.dp),
                 ) {
-                    Card(
-                        onClick = { onAction(MainScreenAction.DecreaseDelay) },
-                        enabled = !(state.active) && (state.delay > 500),
-                    ) {
-                        Box(
-                            modifier = Modifier.padding(8.dp),
-                        ) {
+                    TextField(
+                        enabled = state.active.not(),
+                        modifier = Modifier.height(48.dp).weight(1f),
+                        value = state.count,
+                        onValueChange = { count ->
+                            if (count == "" || count.toIntOrNull() != null) onAction(MainScreenAction.UpdateCount(count))
+                        },
+                        label = {
                             Text(
-                                modifier = Modifier.align(Alignment.Center),
-                                text = "-",
+                                text = when (state.option) {
+                                    DelayOption.Second -> "Second/s"
+                                    DelayOption.Minute -> "Minute/s"
+                                }
                             )
+                        },
+                        trailingIcon = {
+                            Card(
+                                enabled = state.active.not(),
+                                onClick = {
+                                    val option = when (state.option) {
+                                        DelayOption.Second -> DelayOption.Minute
+                                        else -> DelayOption.Second
+                                    }
+                                    onAction(MainScreenAction.UpdateOption(option))
+                                }
+                            ) {
+                                Row(
+                                    modifier = Modifier.padding(8.dp),
+                                    verticalAlignment = Alignment.CenterVertically,
+                                    horizontalArrangement = Arrangement.spacedBy(8.dp),
+                                ) {
+                                    Text(
+                                        text = when (state.option) {
+                                            DelayOption.Second -> "Sec"
+                                            DelayOption.Minute -> "Min"
+                                        }
+                                    )
+                                    Icon(imageVector = Icons.Filled.KeyboardArrowDown, contentDescription = "Min")
+                                }
+                            }
                         }
-                    }
-                    Card(modifier = Modifier.weight(1f)) {
-                        Box(modifier = Modifier.padding(8.dp).fillMaxWidth()) {
-                            Text(
-                                text = state.delay.toString(),
-                                modifier = Modifier.align(Alignment.Center),
-                            )
-                        }
-                    }
-                    Card(
-                        onClick = { onAction(MainScreenAction.IncreaseDelay) },
-                        enabled = !(state.active),
-                    ) {
-                        Box(
-                            modifier = Modifier.padding(8.dp),
-                        ) {
-                            Text(
-                                modifier = Modifier.align(Alignment.Center),
-                                text = "+",
-                            )
-                        }
-                    }
+                    )
                 }
             }
             Button(

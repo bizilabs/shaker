@@ -15,3 +15,6 @@
 `Shaker` is a desktop ([macOS](https://github.com/bizilabs/shaker/releases/latest), [Linux](https://github.com/bizilabs/shaker/releases/latest), [Windows](https://github.com/bizilabs/shaker/releases/latest)) app that moves your mouse cursor after a duration.
 
 > set the duration and click `start` to set it up :wink:
+
+## Screenshot
+<p align="center"><img width=300 src=".github/images/screenshot.png" alt="Shaker Banner"></p>
